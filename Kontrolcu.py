@@ -1,6 +1,6 @@
 # GPL v3 ile lisanslanmıştır
 
-import os,md5,e32dbm,appuifw
+import os,md5,e32dbm,appuifw,e32
 
 vt = "c:\\nokia\\vt.db"
 
@@ -81,23 +81,20 @@ def cdizini():
         pass
     appuifw.note('Çalışma dizini:\n'.decode('utf-8')+os.getcwd().decode('utf-8'),"conf")
 
+def kapat():
+    appuifw.note("Hoşçakalın".decode('utf-8'))
+    print "çıkıldı".decode('utf-8')
+    app_lock.signal()
+
 #fonksiyolar burada bitti simdi arayuzu yazalim
 
+yazi = appuifw.Text()
+yazi.set("      Kontrolcüye Hoşgeldiniz!\n\n  Seçenek düğmesine basarak programı kullanmaya başlayabilirsiniz.\n\n  Kontrolcü:\n    sürüm: 0.05".decode('utf-8'))
+app_lock=e32.Ao_lock()
+appuifw.app.screen ='normal'
 appuifw.app.title = "Kontrolcü".decode('utf-8')
+appuifw.app.body = yazi
 cdizini()
-appmenu=''
-while appmenu != 4:
-    menu=["Çalışma Dizini Değiştir".decode('utf-8'), u"Kontrol et", "Veritabanına Ekle".decode('utf-8'), "Veritabanını Sil".decode('utf-8'), "Çıkış".decode('utf-8')]
-    appmenu=appuifw.selection_list(choices=menu, search_field=1)
-    if appmenu == 0:
-        cdizini()
-    if appmenu == 1:
-        kontrol()
-    if appmenu == 2:
-        vtyaz()
-    if appmenu == 3:
-        vtsil()
-    if appmenu == 4:
-        appuifw.note("Hoşçakalın".decode('utf-8'))
-
-print "çıkıldı".decode('utf-8')
+appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), (u"Kontrol et", kontrol), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanına Ekle".decode('utf-8'), vtyaz), ("Veritabanını Sil".decode('utf-8'), vtsil))), ("Çıkış".decode('utf-8'), kapat)]
+appuifw.app.exit_key_handler = kapat
+app_lock.wait()
