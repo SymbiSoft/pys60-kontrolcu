@@ -1,18 +1,44 @@
-# GPL v3 ile lisanslanmıştır
+__yazilim__ = 'konrolcu'
+__surum__ = '0.06'
+__yazan__ = 'Osman KARAGÖZ'.decode('utf-8')
+__eposta__ = 'osmank3@gmail.com'
+__web__ = 'http://code.google.com/p/pys60-kontrolcu/'
+__lisans__ = 'GPL v3'
 
 import os,md5,e32dbm,appuifw,e32
 
-vt = "c:\\nokia\\vt.db"
+#arayüz fonksiyonunun yazılması
+def arayuz():
+    yazi = appuifw.Text()
+    yazi.set("      Kontrolcüye Hoşgeldiniz!\n              Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s\n\n Seçenek tuşuna basın".decode('utf-8')% (__surum__, os.getcwd(), vt))
+    appuifw.app.screen = 'normal'
+    appuifw.app.title = "Kontrolcü".decode('utf-8')
+    appuifw.app.body = yazi
+    appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), (u"Kontrol et", kontrol), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanına Ekle".decode('utf-8'), vtyaz), ("Veritabanı Oluştur".decode('utf-8'), vtekle))), ("Hakkında".decode('utf-8'), hakkinda), ("Çıkış".decode('utf-8'), kapat)]
+    appuifw.app.exit_key_handler = kapat
+    try:
+        app_lock.wait()
+    except AssertionError: #applock.wait işlemi zaten çalışıyor diyor. Önemsiz bir hata
+        pass
 
+#kontrol fonksiyonunun yazılması
 def kontrol():
+    #seçilen dizin içindeki tüm dosyaların kontrol edilmesi için döngü oluştur
     n=0
     while n < len(os.listdir("")):
         try:
+            #kontrol edilecek dosyanın okunması
             dosyadi=os.listdir("")[n]
-            dosyakont=file(dosyadi).read()
+            dosyakont=file(dosyadi).read() 
+            
+            #md5 toplamını oluşturma
             a=md5.new()
             a.update(dosyakont)
+            
+            #veritabanını okumak üzere açma
             db = e32dbm.open(vt, "r")
+            
+            #veritabanıyla karşılaştırma
             x=a.hexdigest()
             y=db[dosyadi]
             if x == y:
@@ -20,12 +46,13 @@ def kontrol():
             else:
                 appuifw.note("%s dosyası değişmiş (-)".decode('utf-8')% dosyadi.decode('utf-8'), "info")
             db.close()
-        except IOError:
+        #muhtemel hata kaynakları
+        except IOError: #dizinlerin md5 toplamı olmaz
             pass
-        except KeyError:
+        except KeyError: #dosya veritabanında yoksa
             appuifw.note("%s veritabanında bulunmuyor".decode('utf-8')% dosyadi.decode('utf-8'), "info")
             pass
-        except SymbianError:
+        except SymbianError: #veritabanı oluşturulmamış veya seçilmemişse
             appuifw.note("veritabanı bulunamıyor".decode('utf-8'), "error")
             break
         except:
@@ -33,19 +60,27 @@ def kontrol():
             pass
         n=n+1
 
-def vtyaz():
-    db = e32dbm.open(vt, "c")
+#veritabanı oluşturma
+def vtyaz(yontem='w'):
+    db = e32dbm.open(vt, yontem)
+    #seçilen dizindeki tüm dosyaların veritabanına eklenmesi için döngü oluşturulacak
     n=0
     while n < len(os.listdir("")):
-        try:
+        try: #veritabanına eklenecek dosyaların okunması
             dosyadi=os.listdir("")[n]
             dosyakont=file(dosyadi).read()
+            
+            #md5 toplamını oluşturma
             a=md5.new()
             a.update(dosyakont)
+            
+            #veritabanına öğe ekleme
             kontop=a.hexdigest()
             db[dosyadi] = kontop
             print "%s veri tabanına eklendi.".decode('utf-8')% dosyadi.decode('utf-8')
-        except IOError:
+        
+        #Muhtemel hata kaynakları
+        except IOError: #dizinlerin md5 toplamı olmaz
             pass
         except:
             appuifw.note(u"Bilinmeyen hata", "error")
@@ -53,21 +88,17 @@ def vtyaz():
         n=n+1
     db.close()
 
-def vtsil():
-    vts = vt + ".e32dbm"
-    try:
-        os.remove(vts)
-        appuifw.note("%s veritabanı silindi".decode('utf-8')% vts, "info")
-    except OSError:
-        appuifw.note("Veritabanı bulunamadı".decode('utf-8'), "error")
-        pass
-    except:
-        appuifw.note(u"Bilinmeyen hata", "error")
-        pass
+#Veritabanına ekleme yapmak için fonksiyon
+def vtekle():
+    vtyaz('c')
 
+#çalışma dizinini şeçmek ve değiştirmek için fonksiyon
 def cdizini():
+    #menüyle seçim düzenleme
     surucu=[u"C:",u"E:","Özel".decode('utf-8')]
     dizin=appuifw.popup_menu(surucu, "Çalışma dizinini seçin:".decode('utf-8'))
+    
+    #menüdeki seçime göre işlem uygulama
     if dizin == 0:
         os.chdir("c:")
     if dizin == 1:
@@ -81,21 +112,25 @@ def cdizini():
         appuifw.note('Çalışma dizini şeçmemişseniz ana menüden tekrar seçin'.decode('utf-8'),"info")
         pass
     appuifw.note('Çalışma dizini:\n'.decode('utf-8')+os.getcwd().decode('utf-8'),"conf")
+    #değişikliklerin geçerli olması için.
+    arayuz()
 
+#yazılımı kapatmak için fonksiyon
 def kapat():
     appuifw.note("Hoşçakalın".decode('utf-8'))
     print "çıkıldı".decode('utf-8')
     app_lock.signal()
 
-#fonksiyolar burada bitti simdi arayuzu yazalim
+#hakkında bölümünün yazılması
+def hakkinda():
+   yazi = appuifw.Text()
+   yazi.set("\n\n          Kontrolcü Hakkında\n\nSürüm: %s\n\nWeb: %s\n\nYazan: %s\ne-posta: %s\n\n%s ile lisanslanmıştır.".decode('utf-8')% (__surum__, __web__, __yazan__, __eposta__, __lisans__))
+   appuifw.app.screen = 'full'
+   appuifw.app.body = yazi
+   appuifw.app.exit_key_handler = arayuz
 
-yazi = appuifw.Text()
-yazi.set("      Kontrolcüye Hoşgeldiniz!\n\n  Seçenek düğmesine basarak programı kullanmaya başlayabilirsiniz.\n\n  Kontrolcü:\n    sürüm: 0.05".decode('utf-8'))
+#fonksiyolar burada bitti simdi ilk komutları yazalım
+
+vt = "c:\\nokia\\vt.db"
 app_lock=e32.Ao_lock()
-appuifw.app.screen ='normal'
-appuifw.app.title = "Kontrolcü".decode('utf-8')
-appuifw.app.body = yazi
 cdizini()
-appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), (u"Kontrol et", kontrol), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanına Ekle".decode('utf-8'), vtyaz), ("Veritabanını Sil".decode('utf-8'), vtsil))), ("Çıkış".decode('utf-8'), kapat)]
-appuifw.app.exit_key_handler = kapat
-app_lock.wait()
