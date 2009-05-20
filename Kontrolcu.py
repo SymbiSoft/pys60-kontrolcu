@@ -75,7 +75,8 @@ def cdizini():
     try:
         if dizin == 2:
             ozel=appuifw.query('Çalışma dizinini yazın:'.decode('utf-8'),"text")
-            os.chdir(ozel)
+            ozelu=ozel.encode('utf-8')
+            os.chdir(ozelu)
     except TypeError:
         appuifw.note('Çalışma dizini şeçmemişseniz ana menüden tekrar seçin'.decode('utf-8'),"info")
         pass
