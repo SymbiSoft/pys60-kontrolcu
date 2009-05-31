@@ -1,5 +1,5 @@
 __yazilim__ = 'konrolcu'
-__surum__ = '0.07'
+__surum__ = '0.08'
 __yazan__ = 'Osman KARAGÖZ'.decode('utf-8')
 __eposta__ = 'osmank3@gmail.com'
 __web__ = 'http://code.google.com/p/pys60-kontrolcu/'
@@ -10,11 +10,11 @@ import os,md5,e32dbm,appuifw,e32#,sys
 #arayüz fonksiyonunun yazılması
 def arayuz():
     yazi = appuifw.Text()
-    yazi.set("      Kontrolcüye Hoşgeldiniz!\n              Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s\n\n Seçenek tuşuna basın".decode('utf-8')% (__surum__, os.getcwd(), vt))
+    yazi.set("      Kontrolcüye Hoşgeldiniz!\n              Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s".decode('utf-8')% (__surum__, os.getcwd().decode('utf-8'), vt))
     appuifw.app.screen = 'normal'
     appuifw.app.title = "Kontrolcü".decode('utf-8')
     appuifw.app.body = yazi
-    appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), (u"Kontrol et", kontrol), ("VT'den kontrol et".decode('utf-8'), vtdenkontrol), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanı değiştir".decode('utf-8'), vtdegistir), ("Veritabanı Oluştur".decode('utf-8'), vtyaz), ("Veritabanına Ekle".decode('utf-8'), vtekle))), ("Hakkında".decode('utf-8'), hakkinda), ("Çıkış".decode('utf-8'), kapat)]
+    appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), ("Kontrol işlemleri".decode('utf-8'), (("Çalışma dizinini".decode('utf-8'), kontrol), ("Veritabanından".decode('utf-8'), vtdenkontrol))), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanı değiştir".decode('utf-8'), vtdegistir), ("Veritabanı Oluştur".decode('utf-8'), vtyaz), ("Veritabanına Ekle".decode('utf-8'), vtekle))), ("Hakkında".decode('utf-8'), hakkinda), ("Çıkış".decode('utf-8'), kapat)]
     appuifw.app.exit_key_handler = kapat
     try:
         app_lock.wait()
@@ -42,6 +42,9 @@ def kontrol():
             a=md5.new()
             a.update(dosyakont)
             
+            #geçici belleği boşaltma
+            del dosyakont
+            
             #veritabanını okumak üzere açma
             db = e32dbm.open(vt, "r")
             
@@ -64,6 +67,15 @@ def kontrol():
         except SymbianError: #veritabanı oluşturulmamış veya seçilmemişse
             appuifw.note("veritabanı bulunamıyor".decode('utf-8'), "error")
             break
+        except MemoryError: #geçici bellek doldu hatası
+            appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
+            secim=appuifw.query(u'Devam edilsin mi?', 'query')
+            if secim == 1:
+                appuifw.note("%s dosyası geçildi.".decode('utf-8')% dosyadi, "info")
+                pass
+            else:
+                appuifw.note("İşlem durduruldu!".decode('utf-8'), "info")
+                break
 #        except:
   #          appuifw.note(u"Bilinmeyen hata", "error")
     #        pass
@@ -85,6 +97,10 @@ def vtdenkontrol():
         try:
             dosya=file(b).read()
             a.update(dosya)
+            
+            #geçici belleği boşaltma
+            del dosya
+            
             x=a.hexdigest()
             y=db[b]
             if x==y:
@@ -96,6 +112,15 @@ def vtdenkontrol():
             if hata_no==2:
                 yazi.add("%s dosyası bulunamadı.\n".decode('utf-8')% b.decode('utf-8'))
             pass
+        except MemoryError: # bellek doldu hatası
+            appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
+            secim=appuifw.query(u'Devam edilsin mi?', 'query')
+            if secim == 1:
+                appuifw.note("%s dosyası geçildi.".decode('utf-8')% dosyadi, "info")
+                pass
+            else:
+                appuifw.note("İşlem durduruldu!".decode('utf-8'), "info")
+                break
         n=n+1
     yazi.add('\nVeritabanındaki dosyaların kontrolü bitti'.decode('utf-8'))
     db.close()
@@ -104,8 +129,10 @@ def vtdenkontrol():
 def vtdegistir():
     global vt
     try:
-        vta = appuifw.query("vt adresi yaz\n(Dizin geçişlerinde \\ kullan):".decode('utf-8'), 'text')
-        vt = vta.encode('utf-8')
+        vta = appuifw.query("vt adresi yaz:".decode('utf-8'), 'text')
+        vtb = vta.encode('utf-8')
+        vtd=vtb.replace('\\\\','/')
+        vt=vtd.replace('/','\\')
         appuifw.note(vt.decode('utf-8'), 'info')
         arayuz()
     except AttributeError:
@@ -132,6 +159,9 @@ def vtyaz(yontem='n'):
             a=md5.new()
             a.update(dosyakont)
             
+            #geçici belleği boşaltma
+            del dosyakont
+            
             #veritabanına öğe ekleme
             kontop=a.hexdigest()
             dosyadresi = os.getcwd() + dosyadi
@@ -140,6 +170,15 @@ def vtyaz(yontem='n'):
         #Muhtemel hata kaynakları
         except IOError: #dizinlerin md5 toplamı olmaz
             pass
+        except MemoryError: #bellek doldu hatası
+            appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
+            secim=appuifw.query(u'Devam edilsin mi?', 'query')
+            if secim == 1:
+                appuifw.note("%s dosyası geçildi.".decode('utf-8')% dosyadi, "info")
+                pass
+            else:
+                appuifw.note("İşlem durduruldu!".decode('utf-8'), "info")
+                break
 #        except:
   #          appuifw.note(u"Bilinmeyen hata", "error")
     #        pass
@@ -180,7 +219,6 @@ def cdizini():
 #yazılımı kapatmak için fonksiyon
 def kapat():
     appuifw.note("Hoşçakalın".decode('utf-8'))
-    print "çıkıldı".decode('utf-8')
     app_lock.signal()
 #    sys.exit()
 
