@@ -1,5 +1,5 @@
 __yazilim__ = 'konrolcu'
-__surum__ = '0.08'
+__surum__ = '0.08.01'
 __yazan__ = 'Osman KARAGÖZ'.decode('utf-8')
 __eposta__ = 'osmank3@gmail.com'
 __web__ = 'http://code.google.com/p/pys60-kontrolcu/'
@@ -10,7 +10,7 @@ import os,md5,e32dbm,appuifw,e32#,sys
 #arayüz fonksiyonunun yazılması
 def arayuz():
     yazi = appuifw.Text()
-    yazi.set("      Kontrolcüye Hoşgeldiniz!\n              Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s".decode('utf-8')% (__surum__, os.getcwd().decode('utf-8'), vt))
+    yazi.set("      Kontrolcüye Hoşgeldiniz!\n           Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s".decode('utf-8')% (__surum__, os.getcwd().decode('utf-8'), vt.decode('utf-8')))
     appuifw.app.screen = 'normal'
     appuifw.app.title = "Kontrolcü".decode('utf-8')
     appuifw.app.body = yazi
@@ -46,7 +46,7 @@ def kontrol():
             del dosyakont
             
             #veritabanını okumak üzere açma
-            db = e32dbm.open(vt, "r")
+            db = e32dbm.open(vt.decode('utf-8'), "r")
             
             #veritabanıyla karşılaştırma
             x=a.hexdigest()
@@ -64,9 +64,10 @@ def kontrol():
         except KeyError: #dosya veritabanında yoksa
             yazi.add("%s dosyası veritabanında bulunmuyor\n".decode('utf-8')% dosyadi.decode('utf-8'))
             pass
-        except SymbianError: #veritabanı oluşturulmamış veya seçilmemişse
-            appuifw.note("veritabanı bulunamıyor".decode('utf-8'), "error")
-            break
+        except SymbianError, (hata_no, hata): #veritabanı oluşturulmamış veya seçilmemişse
+            if hata_no==-1:
+                appuifw.note("Veritabanı dosyası oluşturulmamış".decode('utf-8'), "error")
+                break
         except MemoryError: #geçici bellek doldu hatası
             appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
             secim=appuifw.query(u'Devam edilsin mi?', 'query')
@@ -84,46 +85,51 @@ def kontrol():
 
 #veritabanından kontrol etme
 def vtdenkontrol():
-    db = e32dbm.open(vt, 'r')
-    yazi = appuifw.Text()
-    yazi.set('Veritabanındaki dosyaların kontrolü başladı\n\n'.decode('utf-8'))
-    appuifw.app.screen = 'large'
-    appuifw.app.body = yazi
-    appuifw.app.exit_key_handler = arayuz
-    n=0
-    while n<len(db.keys()):
-        a=md5.new()
-        b=db.keys()[n]
-        try:
-            dosya=file(b).read()
-            a.update(dosya)
+    try:
+        db = e32dbm.open(vt.decode('utf-8'), 'r')
+        yazi = appuifw.Text()
+        yazi.set('Veritabanındaki dosyaların kontrolü başladı\n\n'.decode('utf-8'))
+        appuifw.app.screen = 'large'
+        appuifw.app.body = yazi
+        appuifw.app.exit_key_handler = arayuz
+        n=0
+        while n<len(db.keys()):
+            a=md5.new()
+            b=db.keys()[n]
+            try:
+                dosya=file(b).read()
+                a.update(dosya)
             
-            #geçici belleği boşaltma
-            del dosya
+                #geçici belleği boşaltma
+                del dosya
             
-            x=a.hexdigest()
-            y=db[b]
-            if x==y:
-                yazi.add("%s dosyası değişmemiş (+)\n".decode('utf-8')% b.decode('utf-8'))
-            else:
-                yazi.add("%s dosyası değişmiş (-)\n".decode('utf-8')% b.decode('utf-8'))
+                x=a.hexdigest()
+                y=db[b]
+                if x==y:
+                    yazi.add("%s dosyası değişmemiş (+)\n".decode('utf-8')% b.decode('utf-8'))
+                else:
+                    yazi.add("%s dosyası değişmiş (-)\n".decode('utf-8')% b.decode('utf-8'))
         
-        except IOError, (hata_no, hata):
-            if hata_no==2:
-                yazi.add("%s dosyası bulunamadı.\n".decode('utf-8')% b.decode('utf-8'))
-            pass
-        except MemoryError: # bellek doldu hatası
-            appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
-            secim=appuifw.query(u'Devam edilsin mi?', 'query')
-            if secim == 1:
-                appuifw.note("%s dosyası geçildi.".decode('utf-8')% dosyadi, "info")
-                pass
-            else:
-                appuifw.note("İşlem durduruldu!".decode('utf-8'), "info")
-                break
-        n=n+1
-    yazi.add('\nVeritabanındaki dosyaların kontrolü bitti'.decode('utf-8'))
-    db.close()
+            except IOError, (hata_no, hata):
+                if hata_no==2:
+                    yazi.add("%s dosyası bulunamadı.\n".decode('utf-8')% b.decode('utf-8'))
+                    pass
+            except MemoryError: # bellek doldu hatası
+                appuifw.note("Dosya geçici belleğe sığmıyor!".decode('utf-8'), "error")
+                secim=appuifw.query(u'Devam edilsin mi?', 'query')
+                if secim == 1:
+                    appuifw.note("%s dosyası geçildi.".decode('utf-8')% dosyadi, "info")
+                    pass
+                else:
+                    appuifw.note("İşlem durduruldu!".decode('utf-8'), "info")
+                    break
+            n=n+1
+        yazi.add('\nVeritabanındaki dosyaların kontrolü bitti'.decode('utf-8'))
+        db.close()
+
+    except SymbianError, (hata_no, hata): #veritabanı bulunamadı hatası
+        if hata_no==-1:
+            appuifw.note("Veritabanı dosyası oluşturulmamış!".decode('utf-8'), "error")
 
 #veritabanı değiştirme fonksiyonu
 def vtdegistir():
@@ -140,7 +146,7 @@ def vtdegistir():
 
 #veritabanı oluşturma
 def vtyaz(yontem='n'):
-    db = e32dbm.open(vt, yontem)
+    db = e32dbm.open(vt.decode('utf-8'), yontem)
     
     yazi = appuifw.Text()
     yazi.set('Veritabanına ekleme başladı...\n\n'.decode('utf-8'))
