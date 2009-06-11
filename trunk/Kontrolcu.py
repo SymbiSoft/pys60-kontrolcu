@@ -5,7 +5,7 @@ __eposta__ = 'osmank3@gmail.com'
 __web__ = 'http://code.google.com/p/pys60-kontrolcu/'
 __lisans__ = 'GPL v3'
 
-import os,md5,e32dbm,appuifw,e32#,sys
+import os,md5,e32dbm,appuifw,e32,sys
 
 #arayüz fonksiyonunun yazılması
 def arayuz():

@@ -46,13 +46,21 @@ Uygulama açıldığında ilk olarak çalışma dizinini seçmeniz gerekir. Bu n
 
     Veritabanına ekleme yapabilmeniz için oluşturulmuş seçenek. Bu seçenekte veritabanı yoksa oluşturulacaktır.
 
-  === Hakkında ===
-
-  Yazılımın hakkındaki bilgilerini gösterir.
-
   === Yardım ===
 
-  Bu yardım sayfasını gösterir
+  Yardım seçeneklerinin bulunduğu menü
+
+    ==== >> Hakkında ====
+
+    Yazılımın hakkındaki bilgilerini gösterir.
+
+    ==== >> Yardım ====
+
+    Bu yardım sayfasını gösterir.
+
+    ==== >> Lisans ====
+
+    Lisans anlaşmasını gösterir.
 
   === Çıkış ===
 
