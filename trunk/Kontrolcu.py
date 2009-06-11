@@ -1,5 +1,5 @@
 __yazilim__ = 'konrolcu'
-__surum__ = '0.08.01'
+__surum__ = '0.09'
 __yazan__ = 'Osman KARAGÖZ'.decode('utf-8')
 __eposta__ = 'osmank3@gmail.com'
 __web__ = 'http://code.google.com/p/pys60-kontrolcu/'
@@ -10,11 +10,11 @@ import os,md5,e32dbm,appuifw,e32#,sys
 #arayüz fonksiyonunun yazılması
 def arayuz():
     yazi = appuifw.Text()
-    yazi.set("      Kontrolcüye Hoşgeldiniz!\n           Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s".decode('utf-8')% (__surum__, os.getcwd().decode('utf-8'), vt.decode('utf-8')))
+    yazi.set("      Kontrolcüye Hoşgeldiniz!\n              Sürüm: %s\n\nÇalışma dizini:\n  %s\n\nVeritabanı dosyası:\n  %s".decode('utf-8')% (__surum__, os.getcwd().decode('utf-8'), vt.decode('utf-8')))
     appuifw.app.screen = 'normal'
     appuifw.app.title = "Kontrolcü".decode('utf-8')
     appuifw.app.body = yazi
-    appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), ("Kontrol işlemleri".decode('utf-8'), (("Çalışma dizinini".decode('utf-8'), kontrol), ("Veritabanından".decode('utf-8'), vtdenkontrol))), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanı değiştir".decode('utf-8'), vtdegistir), ("Veritabanı Oluştur".decode('utf-8'), vtyaz), ("Veritabanına Ekle".decode('utf-8'), vtekle))), ("Hakkında".decode('utf-8'), hakkinda), ("Çıkış".decode('utf-8'), kapat)]
+    appuifw.app.menu = [("Çalışma Dizini Değiştir".decode('utf-8'), cdizini), ("Kontrol işlemleri".decode('utf-8'), (("Çalışma dizinini".decode('utf-8'), kontrol), ("Veritabanından".decode('utf-8'), vtdenkontrol))), ("Veritabanı işlemleri".decode('utf-8'), (("Veritabanı değiştir".decode('utf-8'), vtdegistir), ("Veritabanı Oluştur".decode('utf-8'), vtyaz), ("Veritabanına Ekle".decode('utf-8'), vtekle))), ("Yardım".decode('utf-8'), (("Hakkında".decode('utf-8'), hakkinda), ("Yardım".decode('utf-8'), yardim), (u"Lisans", lisans))), ("Çıkış".decode('utf-8'), kapat)]
     appuifw.app.exit_key_handler = kapat
     try:
         app_lock.wait()
@@ -230,14 +230,33 @@ def kapat():
 
 #hakkında bölümünün yazılması
 def hakkinda():
-   yazi = appuifw.Text()
-   yazi.set("\n\n          Kontrolcü Hakkında\n\nSürüm: %s\n\nWeb: %s\n\nYazan: %s\ne-posta: %s\n\n%s ile lisanslanmıştır.".decode('utf-8')% (__surum__, __web__, __yazan__, __eposta__, __lisans__))
-   appuifw.app.screen = 'full'
-   appuifw.app.body = yazi
-   appuifw.app.exit_key_handler = arayuz
+    yazi = appuifw.Text()
+    yazi.set("\n\n          Kontrolcü Hakkında\n\nSürüm: %s\n\nWeb: %s\n\nYazan: %s\ne-posta: %s\n\n%s ile lisanslanmıştır.".decode('utf-8')% (__surum__, __web__, __yazan__, __eposta__, __lisans__))
+    appuifw.app.screen = 'full'
+    appuifw.app.body = yazi
+    appuifw.app.exit_key_handler = arayuz
+
+#yardım kısmının yazılması
+def yardim():
+    yardimdos = file(cadresi+"\\"+"Yardım").read()
+    yazi = appuifw.Text()
+    yazi.set(yardimdos.decode('utf-8'))
+    appuifw.app.screen = 'full'
+    appuifw.app.body = yazi
+    appuifw.app.exit_key_handler = arayuz
+
+#lisans kısmının yazılması
+def lisans():
+    lisansdos = file(cadresi+"\\"+"Lisans").read()
+    yazi = appuifw.Text()
+    yazi.set(lisansdos.decode('utf-8'))
+    appuifw.app.screen = 'full'
+    appuifw.app.body = yazi
+    appuifw.app.exit_key_handler = arayuz
 
 #fonksiyolar burada bitti simdi ilk komutları yazalım
 
-vt = "c:\\nokia\\vt.db"
+vt = "c:\\vt.db"
+cadresi=os.path.split(sys.argv[0])[0]
 app_lock=e32.Ao_lock()
 cdizini()

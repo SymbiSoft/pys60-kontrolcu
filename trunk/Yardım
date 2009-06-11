@@ -42,13 +42,21 @@ Veritabanı oluşturmak için kullanabileceğiniz seçenek. Bu seçeneğin özel
 
 Veritabanına ekleme yapabilmeniz için oluşturulmuş seçenek. Bu seçenekte veritabanı yoksa oluşturulacaktır.
 
-=== Hakkında ===
+=== Yardım ===
+
+Yardım seçeneklerinin bulunduğu menü
+
+==== >> Hakkında ====
 
 Yazılımın hakkındaki bilgilerini gösterir.
 
-=== Yardım ===
+==== >> Yardım ====
 
-Bu yardım sayfasını gösterir
+Bu yardım sayfasını gösterir.
+
+==== >> Lisans ====
+
+Lisans anlaşmasını gösterir.
 
 === Çıkış ===
 
