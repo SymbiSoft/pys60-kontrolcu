@@ -1,5 +1,5 @@
 __yazilim__ = 'konrolcu'
-__surum__ = '0.09'
+__surum__ = '1.00'
 __yazan__ = 'Osman KARAGÖZ'.decode('utf-8')
 __eposta__ = 'osmank3@gmail.com'
 __web__ = 'http://code.google.com/p/pys60-kontrolcu/'
@@ -218,6 +218,8 @@ def cdizini():
     except AttributeError:
         appuifw.note('Çalışma dizini şeçmelisiniz'.decode('utf-8'),"error")
         cdizini()
+    except OSError:
+        appuifw.note('Çalışma dizini değişmedi'.decode('utf-8'), 'info')
     appuifw.note('Çalışma dizini:\n'.decode('utf-8')+os.getcwd().decode('utf-8'),"conf")
     #değişikliklerin arayüzde görünmesi için.
     arayuz()
