@@ -5,42 +5,37 @@ Pys60-kontrolcu yazılımı, bellek kartı ve telefon belleğindeki dosyaların 
 
 = Kullanımı =
 
-Uygulama açıldığında ilk olarak çalışma dizinini seçmeniz gerekir. Bu noktada rastgele çalışma dizini seçebilirsiniz. Yazılım daha sonra çalıştırma dizinini değiştirmeyi destekliyor.
-İlk defa kullanımda veritabanı oluşturmak gerekiyor. Veritabanı oluşturmak için ilgili çalışma dizininde iken veritabanı oluştur ya da veritabanına ekle diyebilirsiniz.
+Pys60 2.0 sürümünden itibaren dosya yönetici ile çok daha kolay bir kullanıma kavuştu.
+ *Sağ tuş ile seçili dizini listeler
+ *Sol tuş ile üst dizini listeler
+ *2 ile liste başına gider
+ *5 ile liste ortasına gider
+ *8 ile liste sonuna gider
+ *0 ile sürücüler dizinini listeler
+ *Geri silme tuşu ile de seçili olanı siler
+ *Seçim tuşuyla dosya veya dizin hakkında yapabileceklerinizi görürsünüz
 
 == Menüdekiler ==
 
-=== Çalışma dizini değiştir ===
+=== Yenile ===
 
-Yazılım ilk açıldığı andaki dizin seçme menüsünü çağırır ve çalışma dizinini değiştirmeye yarar.
-
-=== Kontrol işlemleri ===
-
-Daha önceden veritabanına eklenmiş olan dosyaların kontrol edilmesi için yöntemler
-
-==== >> Çalışma dizinini ====
-
-Bulunulan çalışma dizinindeki tüm dosyaları kontrol etmeye yarar.
-
-==== >> Veritabanından ====
-
-Seçilmiş veritabanındaki tüm dosyaların kontrol edilmesini sağlar. Bu yöntemde bulunulan çalışma dizininin bir önemi yoktur. Çünkü veritabanına dosyalar adresleriyle birlikte yüklenir.
+Bulunulan dizin içeriğini yeniler. Bazen lazım olabiliyor.
 
 === Veritabanı işlemleri ===
 
 Veritabanı hakkındaki seçeneklerin bulunduğu menü
 
-==== >> Veritabanını değiştir ====
+==== >> Veritabanından kontrol ====
 
-Üzerinde işlem yapılacak olan veritabanı dosyasını seçmek için kullanılır. Veritabanından kontrol işlemlerinin hızlı ve anlaşılır olması için veritabanlarını kategorilere ayırmanızı tavsiye ederim.
+Veritabanındaki tüm dosyaların kontrol edilmesini sağlar. Bu yöntemde bulunulan çalışma dizininin bir önemi yoktur. Çünkü veritabanına dosyalar adresleriyle birlikte yüklenir.
 
-==== >> Veritabanı oluştur ====
+==== >> Veritabanı sıfırla ====
 
-Veritabanı oluşturmak için kullanabileceğiniz seçenek. Bu seçeneğin özelliği eğer seçtiğiniz veritabanı bilgi içeriyorsa bu veritabanı *silinecektir*.
+Veritabanınız çok karıştıysa ve temizlemek istiyorsanız kullanacağınız yegane seçenek.
 
-==== >> Veritabanına ekle ====
+==== >> Veritabanı yedekle ====
 
-Veritabanına ekleme yapabilmeniz için oluşturulmuş seçenek. Bu seçenekte veritabanı yoksa oluşturulacaktır.
+Veritabanının bir yedeğini oluşturmak için koyulmuş seçenek. Bu seçenek sayesinde farklı veritabanı dosyaları oluşturup her birinde ayrı ayrı çalışabilirsiniz. Ama veritabanı değiştirme sırasında vertabanı sıfırlamanız gerekebilir.
 
 === Yardım ===
 
