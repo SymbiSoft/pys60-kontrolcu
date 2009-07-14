@@ -1,10 +1,11 @@
-_surum = "2.0"
+_surum = "2.1"
 _web = 'http://code.google.com/p/pys60-kontrolcu/'
 _yazan = 'Osman KARAGÖZ'.decode('utf-8')
 _eposta = 'osmank3@gmail.com'
 _lisans = 'GPL v3'
 
 import appuifw, e32, e32dbm, md5, os, sys
+from graphics import *
 
 from key_codes import \
      EKeyLeftArrow, EKeyRightArrow, EKeyUpArrow, EKeyDownArrow, EKeyDevice3, \
@@ -19,18 +20,25 @@ class kontrolcu:
         self.kilit = e32.Ao_lock()
         self.cadresi=os.path.split(sys.argv[0])[0]
         self.vt=self.cadresi + "\\veritabani"
+        self.ssur = appuifw.Icon(u"%s\\Kontrolcu.mbm"% self.cadresi, 4, 5)
+        self.sdiz = appuifw.Icon(u"%s\\Kontrolcu.mbm"% self.cadresi, 6, 7)
+        self.sdos = appuifw.Icon(u"%s\\Kontrolcu.mbm"% self.cadresi, 8, 9)
+        self.svt = appuifw.Icon(u"%s\\Kontrolcu.mbm"% self.cadresi, 10, 11)
         self.kok()
     
     #kök dizini için fonksiyon
     def kok(self):
         self.dlist=[]
         self.dlist=e32.drive_list()
+        self.dlistgost=[]
+        for i in e32.drive_list():
+            self.dlistgost.append((i, self.ssur))
         self.dgost()
 
     #liste gösterme fonksiyonu
     def dgost(self, seciliolan=0):
-        self.liskut = appuifw.Listbox(self.dlist, self.komut)
-        self.liskut.set_list(self.dlist, seciliolan)
+        self.liskut = appuifw.Listbox(self.dlistgost, self.komut)
+        self.liskut.set_list(self.dlistgost, seciliolan)
         appuifw.app.body = self.liskut
         appuifw.app.screen = 'normal'
         appuifw.app.title = tr("Kontrolcü")
@@ -61,7 +69,9 @@ class kontrolcu:
                 if menuSecim == 0:
                     os.chdir(self.secim)
                     self.dlist=[]
+                    self.dlistgostlist=[]
                     if len(os.listdir(os.getcwd())) == 0:
+                        self.dlistgost.append(tr('-Dizin Boş-'))
                         self.dlist.append(tr('-Dizin Boş-'))
                         self.dgost()
                     else:
@@ -143,8 +153,10 @@ class kontrolcu:
             if os.path.isdir(self.secim) == 1:
                 os.chdir(self.secim)
                 self.dlist=[]
+                self.dlistgost=[]
                 if len(os.listdir(os.getcwd())) == 0:
                     self.dlist.append(tr('-Dizin Boş-'))
+                    self.dlistgost.append(tr('-Dizin Boş-'))
                     self.dgost()
                 else:
                     self.dyenile()
@@ -173,27 +185,38 @@ class kontrolcu:
         elif secenek == "enust":
             self.dgost(0)
         elif secenek == "enalt":
-            self.dgost(len(self.dlist)-1)
+            self.dgost(len(self.dlistgost)-1)
         elif secenek == "orta":
-            self.dgost(len(self.dlist)/2)
+            self.dgost(len(self.dlistgost)/2)
 
     #arayüz yenileme için fonksiyon
     def dyenile(self):
         if self.dlist == e32.drive_list():
             self.dgost()
-        if len(os.listdir(os.getcwd())) == 0:
+        elif len(os.listdir(os.getcwd())) == 0:
             self.dlist=[]
+            self.dlistgost=[]
             self.dlist.append(tr('-Dizin Boş-'))
+            self.dlistgost.append(tr('-Dizin Boş-'))
             self.dgost()
         else:
             self.dlist=[]
+            self.dlistgost=[]
             doslist=[]
+            doslistgost=[]
             for i in os.listdir(os.getcwd()):
                 if os.path.isdir(i):
                     self.dlist.append(tr(i))
+                    self.dlistgost.append((tr(i), self.sdiz))
                 else:
-                    doslist.append(tr(i))
+                    if i.count(".e32dbm") == 0:
+                        doslist.append(tr(i))
+                        doslistgost.append((tr(i), self.sdos))
+                    else:
+                        doslist.append(tr(i))
+                        doslistgost.append((tr(i), self.svt))
             self.dlist += doslist
+            self.dlistgost += doslistgost
             self.dgost()
 
     #Bir dizin içeriği için kontrol fonksiyonu
@@ -285,7 +308,7 @@ class kontrolcu:
         #muhtemel hata kaynakları
         except KeyError: #dosya veritabanında yoksa
             appuifw.note(tr("%s dosyası veritabanında bulunmuyor\n")% tr(dosyadi), "error")
-        except SymbianError, (hata_no, hata): #veritabanı oluşturulmamış veya seçilmemişse
+        except SymbianError, (hata_no, hata): #veritabanı oluşturulmamışsa
             if hata_no==-1:
                 appuifw.note(tr("Veritabanı dosyası oluşturulmamış"), "error")
         except MemoryError: #geçici bellek doldu hatası
