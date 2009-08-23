@@ -9,14 +9,14 @@ Pys60-kontrolcu yazılımı, bellek kartı ve telefon belleğindeki dosyaların 
 = Kullanımı =
 
 Pys60 2.0 sürümünden itibaren dosya yönetici ile çok daha kolay bir kullanıma kavuştu.
- *Sağ tuş ile seçili dizini listeler
- *Sol tuş ile üst dizini listeler
- *2 ile liste başına gider
- *5 ile liste ortasına gider
- *8 ile liste sonuna gider
- *0 ile sürücüler dizinini listeler
- *Geri silme tuşu ile de seçili olanı siler
- *Seçim tuşuyla dosya veya dizin hakkında yapabileceklerinizi görürsünüz
+ * Sağ tuş ile seçili dizini listeler
+ * Sol tuş ile üst dizini listeler
+ * 2 ile liste başına gider
+ * 5 ile liste ortasına gider
+ * 8 ile liste sonuna gider
+ * 0 ile sürücüler dizinini listeler
+ * Geri silme tuşu ile de seçili olanı siler
+ * Seçim tuşuyla dosya veya dizin hakkında yapabileceklerinizi görürsünüz
 
 == Menüdekiler ==
 
