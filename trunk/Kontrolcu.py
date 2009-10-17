@@ -1,4 +1,4 @@
-_surum = "2.1"
+_surum = "2.2"
 _web = 'http://code.google.com/p/pys60-kontrolcu/'
 _yazan = 'Osman KARAGÖZ'.decode('utf-8')
 _eposta = 'osmank3@gmail.com'
@@ -232,14 +232,19 @@ class kontrolcu:
                 #kontrol edilecek dosyanın okunması
                 dosyadi=os.listdir("")[n]
                 dosyadresi=os.getcwd() + dosyadi
-                dosyakont=file(dosyadi).read() 
+                dosyakont=file(dosyadi, "rb") 
                 
                 #md5 toplamını oluşturma
                 a=md5.new()
-                a.update(dosyakont)
                 
-                #geçici belleği boşaltma
-                del dosyakont
+                bolum=1024**2/2
+                while bolum:
+                    bolumcuk=dosyakont.read(bolum)
+                    a.update(bolumcuk)
+                    bolum = len(bolumcuk)
+                    
+                    #geçici belleği boşaltma
+                    del bolumcuk
                 
                 #veritabanını okumak üzere açma
                 db = e32dbm.open(self.vt, "r")
@@ -287,10 +292,15 @@ class kontrolcu:
             
             #md5 toplamını oluşturma
             a=md5.new()
-            a.update(dosyakont)
             
-            #geçici belleği boşaltma
-            del dosyakont
+            bolum=1024**2/2
+            while bolum:
+                bolumcuk = dosyakont.read(bolum)
+                a.update(bolumcuk)
+                bolum = len(bolumcuk)
+                
+                #geçici belleği boşaltma
+                del bolumcuk
             
             #veritabanını okumak üzere açma
             db = e32dbm.open(self.vt, "r")
@@ -333,10 +343,15 @@ class kontrolcu:
                 
                 #md5 toplamını oluşturma
                 a=md5.new()
-                a.update(dosyakont)
                 
-                #geçici belleği boşaltma
-                del dosyakont
+                bolum=1024**2/2
+                while bolum:
+                    bolumcuk = dosyakont.read(bolum)
+                    a.update(bolumcuk)
+                    bolum = len(bolumcuk)
+                    
+                    #geçici belleği boşaltma
+                    del bolumcuk
                 
                 #veritabanına öğe ekleme
                 kontop=a.hexdigest()
@@ -371,10 +386,15 @@ class kontrolcu:
             
             #md5 toplamını oluşturma
             a=md5.new()
-            a.update(dosyakont)
             
-            #geçici belleği boşaltma
-            del dosyakont
+            bolum = 1024**2/2
+            while bolum:
+                bolumcuk = dosyakont(bolum)
+                a.update(bolumcuk)
+                bolum = len(bolumcuk)
+                
+                #geçici belleği boşaltma
+                del bolumcuk
             
             #veritabanına öğe ekleme
             kontop=a.hexdigest()
@@ -399,11 +419,15 @@ class kontrolcu:
                 a=md5.new()
                 b=db.keys()[n]
                 try:
-                    dosya=file(b).read()
-                    a.update(dosya)
+                    dosya=file(b, "rb")
+                    bolum=1024**2/2
+                    while bolum:
+                        bolumcuk = dosya.read(bolum)
+                        a.update(bolumcuk)
+                        bolum = len(bolumcuk)
                     
-                    #geçici belleği boşaltma
-                    del dosya
+                        #geçici belleği boşaltma
+                        del bolumcuk
                     
                     x=a.hexdigest()
                     y=db[b]
