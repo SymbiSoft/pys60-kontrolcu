@@ -288,7 +288,7 @@ class kontrolcu:
             #kontrol edilecek dosyanın okunması
             dosyadi=self.secim
             dosyadresi=os.getcwd() + dosyadi
-            dosyakont=file(dosyadi).read()
+            dosyakont=file(dosyadi, "rb")
             
             #md5 toplamını oluşturma
             a=md5.new()
@@ -339,7 +339,7 @@ class kontrolcu:
         while n < len(os.listdir("")):
             try: #veritabanına eklenecek dosyaların okunması
                 dosyadi=os.listdir("")[n]
-                dosyakont=file(dosyadi).read()
+                dosyakont=file(dosyadi, "rb")
                 
                 #md5 toplamını oluşturma
                 a=md5.new()
@@ -382,7 +382,7 @@ class kontrolcu:
         try:
             dosyadi=self.secim
             dosyadresi = os.getcwd() + dosyadi
-            dosyakont=file(dosyadi).read()
+            dosyakont=file(dosyadi, "rb")
             
             #md5 toplamını oluşturma
             a=md5.new()
