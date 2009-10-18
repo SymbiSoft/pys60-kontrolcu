@@ -1,6 +1,9 @@
 #labels Featured
 <wiki:toc max_depth="1" />
 
+= 2.02 =
+ * Artık geçici belleğe sığmayan dosyaların kontrolü yapılabiliyor.
+
 = 2.01 =
  * Dosya, dizin ve sürücü simgeleri eklendi.
  * Sürücüler dizinindeyken yenileme hatası giderildi.
