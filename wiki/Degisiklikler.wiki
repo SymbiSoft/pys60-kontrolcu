@@ -1,6 +1,9 @@
 #labels Featured
 <wiki:toc max_depth="1" />
 
+= 2.03 =
+ * Kontrol işlemi sırasında veritabanında bulunmayan dosyaları kontrol etmeden bildirim veriyor.
+
 = 2.02 =
  * Artık geçici belleğe sığmayan dosyaların kontrolü yapılabiliyor.
 
