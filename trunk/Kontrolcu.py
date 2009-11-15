@@ -1,4 +1,4 @@
-_surum = "2.2"
+_surum = "2.3"
 _web = 'http://code.google.com/p/pys60-kontrolcu/'
 _yazan = 'Osman KARAGÖZ'.decode('utf-8')
 _eposta = 'osmank3@gmail.com'
@@ -233,6 +233,13 @@ class kontrolcu:
                 dosyadi=os.listdir("")[n]
                 dosyadresi=os.getcwd() + dosyadi
                 dosyakont=file(dosyadi, "rb") 
+
+                #veritabanını okumak üzere açma
+                db = e32dbm.open(self.vt, "r")
+                
+                #veritabanından dosyanın toplamını alma
+                
+                y=db[dosyadresi]
                 
                 #md5 toplamını oluşturma
                 a=md5.new()
@@ -246,12 +253,7 @@ class kontrolcu:
                     #geçici belleği boşaltma
                     del bolumcuk
                 
-                #veritabanını okumak üzere açma
-                db = e32dbm.open(self.vt, "r")
-                
-                #veritabanıyla karşılaştırma
                 x=a.hexdigest()
-                y=db[dosyadresi]
                 
                 if x == y:
                     self.yazi.add(tr("%s dosyası değişmemiş (+)\n")% tr(dosyadi))
@@ -289,6 +291,12 @@ class kontrolcu:
             dosyadi=self.secim
             dosyadresi=os.getcwd() + dosyadi
             dosyakont=file(dosyadi, "rb")
+
+            #veritabanını okumak üzere açma
+            db = e32dbm.open(self.vt, "r")
+            
+            #veritabanından dosyanın toplamını alma
+            y=db[dosyadresi]
             
             #md5 toplamını oluşturma
             a=md5.new()
@@ -302,12 +310,7 @@ class kontrolcu:
                 #geçici belleği boşaltma
                 del bolumcuk
             
-            #veritabanını okumak üzere açma
-            db = e32dbm.open(self.vt, "r")
-            
-            #veritabanıyla karşılaştırma
             x=a.hexdigest()
-            y=db[dosyadresi]
             
             if x == y:
                 appuifw.note(tr("%s dosyası değişmemiş (+)\n")% tr(dosyadi), "info")
